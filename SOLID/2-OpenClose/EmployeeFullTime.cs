@@ -1,14 +1,14 @@
 namespace OpenClose
 {
-    public class EmployeeFullTime
+    public class EmployeeFullTime : Employee
     {
-        public string Fullname { get; set; }
-        public int HoursWorked { get; set; }
+        public decimal HourValue { get; set; } = 30000M;
+        public EmployeeFullTime(string fullname, int hoursWorked) : base(fullname, hoursWorked) { }
 
-        public EmployeeFullTime(string fullname, int hoursWorked)
-        {
-            Fullname = fullname;
-            HoursWorked = hoursWorked;
-        }  
+        public override decimal CalculateSalaryMonthly() {
+            decimal salary = HourValue * HoursWorked;
+            return salary;
+        }
+
     }
 }
