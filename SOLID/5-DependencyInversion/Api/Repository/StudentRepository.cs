@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 
 namespace DependencyInversion
 {
-    public class StudentRepository
+    public class StudentRepository : IStudentRepository
     {
         private static ObservableCollection<Student> collection;
 
@@ -15,7 +15,7 @@ namespace DependencyInversion
         {
             if (collection == null) 
             {
-                collection = new();
+                collection = new ObservableCollection<Student>();
                 collection.Add(new Student(1, "Pepito Pérez", new List<double>() { 3, 4.5 }));
                 collection.Add(new Student(2, "Mariana Lopera", new List<double>() { 4, 5 }));
                 collection.Add(new Student(3, "José Molina", new List<double>() { 2, 3 }));
@@ -31,5 +31,11 @@ namespace DependencyInversion
         {
             collection.Add(student);
         }
+    }
+
+    public interface IStudentRepository
+    {
+        IEnumerable<Student> GetAll();
+        void Add(Student student);
     }
 }

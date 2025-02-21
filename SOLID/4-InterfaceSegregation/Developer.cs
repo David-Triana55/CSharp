@@ -1,34 +1,24 @@
 namespace InterfaceSegregation
 {
-    public class Developer : IActivities
+    public class Developer : IWorkTeamActivities, IDevelopertActivities
     {
+        
         public Developer()
         {
         }
 
         public void Plan() 
         {
-            throw new ArgumentException();
+            Console.WriteLine("I'm planning user stories");
         }
-
         public void Comunicate() 
         {
-            throw new ArgumentException();
+            Console.WriteLine("I'm talking to the team user");
         }
-
-        public void Design() 
-        {
-            throw new ArgumentException();
-        }
-
         public void Develop() 
         {
             Console.WriteLine("I'm developing the functionalities required");
         }
 
-        public void Test() 
-        {
-            throw new ArgumentException();
-        }
     }
 }
