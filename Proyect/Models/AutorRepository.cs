@@ -21,9 +21,6 @@ public class AutorRepository : IAutorRepository
     {
       Autores[indice] = autor;
     }
-
-    // Autores.RemoveAt(indice);
-    // Autores.Add(autor);
   }
 
   public void EliminarAutor(int indice)
