@@ -1,0 +1,36 @@
+[
+  {
+    "Nombre": "Gabriel Garcia Marquez",
+    "FechaNacimiento": "1927-03-06T00:00:00",
+    "Nacionalidad": "Colombiana",
+    "Libros": [
+      "Cien años de soledad",
+      "El amor en los tiempos del cólera"
+    ]
+  },
+  {
+    "Nombre": "Isabel Allende",
+    "FechaNacimiento": "1942-08-02T00:00:00",
+    "Nacionalidad": "Chilena",
+    "Libros": [
+      "La casa de los espíritus",
+      "Paula"
+    ]
+  },
+  {
+    "Nombre": "Carlos Ruiz Zafon",
+    "FechaNacimiento": "1927-03-06T00:00:00",
+    "Nacionalidad": "Colombiana",
+    "Libros": [
+      "La Sombra del Viento"
+    ]
+  },
+  {
+    "Nombre": "Miguel de Cervantes",
+    "FechaNacimiento": "1899-08-24T00:00:00",
+    "Nacionalidad": "Argentina",
+    "Libros": [
+      "Don Quijote de la Mancha"
+    ]
+  }
+]
