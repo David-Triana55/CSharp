@@ -17,8 +17,12 @@ public class LibroRepository : ILibroRepository
 
   public void EditarLibro(int indice, Libro libro)
   {
-    Libros.RemoveAt(indice);
-    Libros.Add(libro);
+    if (indice >= 0 && indice < Libros.Count) 
+    {
+       Libros[índice] = libro;
+    } else {
+       Console.WriteLine("indice inválido");
+    }
   }
 
   public void EliminarLibro(int indice)
