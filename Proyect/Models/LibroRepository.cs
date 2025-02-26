@@ -17,11 +17,13 @@ public class LibroRepository : ILibroRepository
 
   public void EditarLibro(int indice, Libro libro)
   {
-    if (indice >= 0 && indice < Libros.Count) 
+    if (indice >= 0 && indice < Libros.Count)
     {
-       Libros[índice] = libro;
-    } else {
-       Console.WriteLine("indice inválido");
+      Libros[indice] = libro;
+    }
+    else
+    {
+      Console.WriteLine("indice inválido");
     }
   }
 

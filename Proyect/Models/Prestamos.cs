@@ -4,7 +4,7 @@ public class Prestamo
   public string LibroPrestado { get; set; }
   public string Autor { get; set; }
   public DateTime FechaPrestamo { get; set; }
-  public DateTime? FechaDevolucion { get; set; } = null;
+  public DateTime? FechaDevolucion { get; set; }
 
   public Prestamo(string libroPrestado, string autor, DateTime fechaPrestamo, DateTime fechaDevolucion)
   {
