@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -9,10 +10,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace API.Migrations
 {
-    [DbContext(typeof(TaskContext))]
-    partial class TaskContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(NotesContext))]
+    [Migration("20250305223901_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,7 +31,6 @@ namespace API.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -55,7 +57,7 @@ namespace API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("API.Models.Task", b =>
+            modelBuilder.Entity("API.Models.Note", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,7 +70,6 @@ namespace API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -123,10 +124,10 @@ namespace API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("API.Models.Task", b =>
+            modelBuilder.Entity("API.Models.Note", b =>
                 {
                     b.HasOne("API.Models.Category", "Category")
-                        .WithMany("Tasks")
+                        .WithMany("Notes")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -136,7 +137,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Category", b =>
                 {
-                    b.Navigation("Tasks");
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

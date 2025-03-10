@@ -1,6 +1,7 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 namespace API.Models;
-public class Task
+public class Note
 {
   public Guid Id { get; set; }
   public Guid CategoryId { get; set; }
@@ -9,14 +10,14 @@ public class Task
 
   public DateTime CreatedAt { get; set; }
 
-  public TaskPriority Priority { get; set; }
-
+  public NotePriority Priority { get; set; }
+  [JsonIgnore]
   public virtual Category Category { get; set; }
   public bool IsActive { get; set; }
 
 }
 
-public enum TaskPriority
+public enum NotePriority
 {
   Low = 1,
   Medium = 2,
