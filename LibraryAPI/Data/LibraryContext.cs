@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using LibraryAPI.Models;
+namespace LibraryAPI.Data;
 public class LibraryContext : DbContext
 {
   public DbSet<User> Users { get; set; }
@@ -19,6 +20,7 @@ public class LibraryContext : DbContext
       user.Property(u => u.Email).IsRequired().HasMaxLength(50).HasColumnName("email");
       user.Property(u => u.Password).IsRequired().HasMaxLength(255).HasColumnName("password");
       user.Property(u => u.IdNumber).IsRequired().HasColumnName("id_number");
+      user.Property(u => u.Role).IsRequired().HasColumnName("role");
     });
 
     modelBuilder.Entity<Book>(book =>

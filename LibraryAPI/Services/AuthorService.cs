@@ -1,30 +1,39 @@
 using System.Collections;
+using LibraryAPI.Data;
+using LibraryAPI.DTOs;
 using LibraryAPI.Models;
 using Microsoft.EntityFrameworkCore;
 public class AuthorService : IAuthorService
 {
-  LibraryContext _libraryContext;
+  readonly LibraryContext _context;
   public AuthorService(LibraryContext context)
   {
-    _libraryContext = context;
+    _context = context;
   }
   // listar autores
   public IEnumerable<Author> GetAuthors()
   {
-    return _libraryContext.Authors.Include(b => b.Books).ToList();
+    return _context.Authors.Include(b => b.Books).ToList();
   }
 
   // agregar autores
-  public async Task Add(Author author)
+  public async Task Add(CreateAuthorDto author)
   {
-    await _libraryContext.Authors.AddAsync(author);
-    await _libraryContext.SaveChangesAsync();
+    var authorAdd = new Author
+    {
+      Name = author.Name,
+      Nationality = author.Nationality,
+      Birthdate = author.Birthdate
+    };
+
+    await _context.Authors.AddAsync(authorAdd);
+    await _context.SaveChangesAsync();
   }
 
   // editar autores
-  public async Task Edit(int id, Author author)
+  public async Task Edit(int id, UpdateAuthor author)
   {
-    Author editAuthor = await _libraryContext.Authors.FindAsync(id);
+    Author editAuthor = await _context.Authors.FindAsync(id);
 
     if (editAuthor != null)
     {
@@ -32,18 +41,18 @@ public class AuthorService : IAuthorService
       editAuthor.Nationality = author.Nationality;
       editAuthor.Birthdate = author.Birthdate;
 
-      await _libraryContext.SaveChangesAsync();
+      await _context.SaveChangesAsync();
     }
   }
   // eliminar autores
   public async Task Remove(int id)
   {
-    Author editAuthor = await _libraryContext.Authors.FindAsync(id);
+    Author editAuthor = await _context.Authors.FindAsync(id);
 
     if (editAuthor != null)
     {
-      _libraryContext.Authors.Remove(editAuthor);
-      await _libraryContext.SaveChangesAsync();
+      _context.Authors.Remove(editAuthor);
+      await _context.SaveChangesAsync();
     }
   }
 }
@@ -51,7 +60,7 @@ public class AuthorService : IAuthorService
 public interface IAuthorService
 {
   IEnumerable<Author> GetAuthors();
-  Task Add(Author author);
-  Task Edit(int id, Author author);
+  Task Add(CreateAuthorDto author);
+  Task Edit(int id, UpdateAuthor author);
   Task Remove(int idx);
 }

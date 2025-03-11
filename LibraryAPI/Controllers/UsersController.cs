@@ -1,3 +1,4 @@
+using LibraryAPI.DTOs;
 using LibraryAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 namespace LibraryAPI.Controllers;
@@ -13,15 +14,16 @@ public class UsersController : ControllerBase
   }
 
   [Route("login")]
-  [HttpPost()]
-  public async Task Post(User user)
+  [HttpPost]
+  public async Task<IActionResult> Login(LoginUserDto user)
   {
-    Ok(await _userService.Login(user.Email, user.Password));
+    var token = await _userService.Login(user.Email, user.Password);
+    return Ok(new { token });
   }
 
   [Route("register")]
-  [HttpPost()]
-  public async Task<IActionResult> Register(User user)
+  [HttpPost]
+  public async Task<IActionResult> Register(RegisterUserDto user)
   {
     await _userService.Register(user);
     return Created();

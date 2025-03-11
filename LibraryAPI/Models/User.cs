@@ -8,6 +8,7 @@ public class User
 
   public string Password { get; set; }
   public string IdNumber { get; set; }
+  public string Role { get; set; }
 
   public virtual ICollection<Loan> Loans { get; set; } = [];
 }

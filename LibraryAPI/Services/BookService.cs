@@ -1,31 +1,40 @@
 using System.Collections;
+using LibraryAPI.Data;
+using LibraryAPI.DTOs;
 using Microsoft.EntityFrameworkCore;
 public class BookService : IBookService
 {
-  LibraryContext _libraryContext;
+  readonly LibraryContext _context;
   public BookService(LibraryContext context)
   {
-    _libraryContext = context;
+    _context = context;
   }
   // lsitar libros
   public IEnumerable<Book> GetBooks()
   {
-    return _libraryContext.Books.Include(b => b.Author).ToList();
+    return _context.Books.Include(b => b.Author).ToList();
   }
 
-
-
   // agregar libros
-  public async Task Add(Book book)
+  public async Task Add(CreateBookDto book)
   {
-    await _libraryContext.Books.AddAsync(book);
-    await _libraryContext.SaveChangesAsync();
+    var bookAdd = new Book
+    {
+      AuthorId = book.AuthorId,
+      Title = book.Title,
+      Genre = book.Genre,
+      PublicationDate = book.PublicationDate,
+      Status = book.Status
+    };
+
+    await _context.Books.AddAsync(bookAdd);
+    await _context.SaveChangesAsync();
   }
 
   // editar libros
-  public async Task Edit(int id, Book book)
+  public async Task Edit(int id, UpdateBookDto book)
   {
-    Book editBook = await _libraryContext.Books.FindAsync(id);
+    Book editBook = await _context.Books.FindAsync(id);
 
     if (editBook != null)
     {
@@ -35,18 +44,18 @@ public class BookService : IBookService
       editBook.PublicationDate = book.PublicationDate;
       editBook.Status = book.Status;
 
-      await _libraryContext.SaveChangesAsync();
+      await _context.SaveChangesAsync();
     }
   }
   // eliminar libros
   public async Task Remove(int id)
   {
-    Book editBook = await _libraryContext.Books.FindAsync(id);
+    Book editBook = await _context.Books.FindAsync(id);
 
     if (editBook != null)
     {
-      _libraryContext.Books.Remove(editBook);
-      await _libraryContext.SaveChangesAsync();
+      _context.Books.Remove(editBook);
+      await _context.SaveChangesAsync();
     }
   }
 }
@@ -54,7 +63,7 @@ public class BookService : IBookService
 public interface IBookService
 {
   IEnumerable<Book> GetBooks();
-  Task Add(Book book);
-  Task Edit(int idx, Book book);
+  Task Add(CreateBookDto book);
+  Task Edit(int idx, UpdateBookDto book);
   Task Remove(int idx);
 }
