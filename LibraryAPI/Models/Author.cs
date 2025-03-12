@@ -9,6 +9,5 @@ public class Author
 
   public DateOnly Birthdate { get; set; }
 
-  [JsonIgnore]
   public virtual ICollection<Book> Books { get; set; } = [];
 }

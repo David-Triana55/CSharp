@@ -1,27 +1,38 @@
 using LibraryAPI.Models;
 using LibraryAPI.Data;
-using System.IdentityModel.Tokens.Jwt;  // manejar los JWT 
-using Microsoft.IdentityModel.Tokens;  // Para definir la seguridad del token
-using System.Security.Claims;  // definir los datos (claims) dentro del token
-using System.Text;  //  Para trabajar con texto (como convertir la clave secreta a bytes)
-using Microsoft.AspNetCore.DataProtection;  //  Para cifrar contraseñas (como `bcrypt` en Node.js)
-using BCrypt.Net;
 using LibraryAPI.DTOs;
-public class UserService : IUserService
+using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt; // manejar JWT 
+using Microsoft.IdentityModel.Tokens;  // define seguridad del token
+using System.Security.Claims;          // definir claims del token
+using System.Text;                     // convertir la clave secreta a bytes
+using BCrypt.Net;                      // cifrar la clave secreta
+
+public class UserService(LibraryContext context) : IUserService
 {
-  readonly LibraryContext _context;
+  readonly LibraryContext _context = context;
   private readonly string _secretKey = "TuClaveSuperSecretaConAlMenos16Caracteres";
-  public UserService(LibraryContext context, IConfiguration configuration)
+
+  public bool UserExist(string email)
   {
-    _context = context;
+    return _context.Users.Any(u => u.Email == email);
   }
 
-  // registar un usuario
+  public async Task<IEnumerable<ResponseUserDto>> GetUsers()
+  {
+    return await _context.Users.Select(u => new ResponseUserDto
+    {
+      Id = u.Id,
+      Name = u.Name,
+      Email = u.Email,
+      IdNumber = u.IdNumber
+    }).ToListAsync();
+  }
+
   public async Task Register(RegisterUserDto user)
   {
-    Console.WriteLine($"Intentando registrar: {user.Email}, {user.IdNumber}, {user.Name}");
 
-    var alreadyRegister = UserExist(user.Email);
+    bool alreadyRegister = UserExist(user.Email);
 
     if (alreadyRegister)
     {
@@ -42,13 +53,13 @@ public class UserService : IUserService
   }
 
 
-  public async Task<string> Login(string email, string password)
+  public async Task<string> SignIn(string email, string password)
   {
-    var user = _context.Users.FirstOrDefault(u => u.Email == email);
+    var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
     if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
     {
-      throw new Exception("Credenciales inválidas");
+      throw new Exception("Invalid credentials");
     }
 
     var token = GenerateJwtToken(user);
@@ -57,40 +68,48 @@ public class UserService : IUserService
 
   private string GenerateJwtToken(User user)
   {
-    var tokenHandler = new JwtSecurityTokenHandler(); // Crea un manejador para el token
-    var key = Encoding.UTF8.GetBytes(_secretKey); // Convierte la clave secreta en un array de bytes
+    var tokenHandler = new JwtSecurityTokenHandler(); // Crear manejador para el token
+    var key = Encoding.UTF8.GetBytes(_secretKey);     // Conviertir la clave en array de bytes
 
-    var claims = new List<Claim>
+    var claims = new List<Claim>                      // Lista de claims
     {
-        new(ClaimTypes.Name, user.Email), // Email del usuario
-        new(ClaimTypes.Role, user.Role), // Rol del usuario
-        new("UserId", user.Id.ToString())
-
+      new(ClaimTypes.Email, user.Email),
+      new(ClaimTypes.Role, user.Role),
+      new("UserId", user.Id.ToString())
     };
 
-    var tokenDescriptor = new SecurityTokenDescriptor // define los datos (payload) del token
+    var tokenDescriptor = new SecurityTokenDescriptor // define el payload   
     {
-      Subject = new ClaimsIdentity(claims), // define los claims
-      Expires = DateTime.UtcNow.AddHours(1), // define el tiempo de expiracion
+      Subject = new ClaimsIdentity(claims),           // define claims
+      Expires = DateTime.UtcNow.AddHours(1),          // define tiempo de expiracion
       SigningCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(key), // firma el token con la clave
-            SecurityAlgorithms.HmacSha256Signature // algoritmo de firma
-        )
+        new SymmetricSecurityKey(key),                // firmar token con la clave
+        SecurityAlgorithms.HmacSha256Signature        // algoritmo de firma
+      )
     };
 
-    var token = tokenHandler.CreateToken(tokenDescriptor); // crea el token
-    return tokenHandler.WriteToken(token); // retorna el token como un string
+    var token = tokenHandler.CreateToken(tokenDescriptor);
+    return tokenHandler.WriteToken(token);            // retorna token en string
   }
 
-  public bool UserExist(string email)
+  public async Task DeleteUser(int id)
   {
-    return _context.Users.Any(u => u.Email == email);
+    User editUser = await _context.Users.FindAsync(id);
+
+    if (editUser == null)
+    {
+      throw new Exception("User doesn't exist");
+    }
+    _context.Users.Remove(editUser);
+    await _context.SaveChangesAsync();
   }
+
 }
 
 public interface IUserService
 {
+  Task<IEnumerable<ResponseUserDto>> GetUsers();
   Task Register(RegisterUserDto user);
-  Task<string> Login(string email, string password);
-
+  Task<string> SignIn(string email, string password);
+  Task DeleteUser(int id);
 }

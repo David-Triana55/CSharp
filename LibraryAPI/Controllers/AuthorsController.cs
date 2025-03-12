@@ -4,48 +4,89 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace LibraryAPI.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class AuthorsController : ControllerBase
+public class AuthorsController(IAuthorService service) : ControllerBase
 {
-  IAuthorService _AuthorService;
-  public AuthorsController(IAuthorService service)
-  {
-    _AuthorService = service;
-  }
-
+  readonly IAuthorService _AuthorService = service;
 
   [HttpGet]
-  [Authorize(Roles = "user")]
-  [Authorize(Roles = "admin")]
-  public IActionResult Get()
+  [Authorize]
+  public async Task<IActionResult> Get()
   {
-    return Ok(_AuthorService.GetAuthors());
+    try
+    {
+      var response = await _AuthorService.GetAuthors();
+      return Ok(response);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
   }
+
+
+  [Authorize]
+  [HttpGet("{id}")]
+  public async Task<IActionResult> GetById(int id)
+  {
+    try
+    {
+      var response = await _AuthorService.GetAuthorId(id);
+      return Ok(response);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
+  }
+
 
   [HttpPost]
   [Authorize(Roles = "admin")]
-  public IActionResult Post(CreateAuthorDto author)
+  public async Task<IActionResult> Post(CreateAuthorDto author)
   {
-    _AuthorService.Add(author);
-    return Created();
+    try
+    {
+      ResponseAuthorDto responseAuthor = await _AuthorService.CreateAuthor(author);
+      return CreatedAtAction(nameof(GetById), new { id = responseAuthor.Id }, responseAuthor);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
   }
+
 
   [HttpPut("{id}")]
   [Authorize(Roles = "admin")]
-  public async Task<IActionResult> Put(int id, UpdateAuthor author)
+  public async Task<IActionResult> Put(int id, UpdateAuthorDto author)
   {
-    await _AuthorService.Edit(id, author);
-    return Ok(new { message = "Author update sucessfully" });
+    try
+    {
+      await _AuthorService.UpdateAuthor(id, author);
+      return Ok(new { message = "Author update sucessfully" });
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
   }
+
 
   [HttpDelete("{id}")]
   [Authorize(Roles = "admin")]
   public async Task<IActionResult> Delete(int id)
   {
-    await _AuthorService.Remove(id);
-    return NoContent();
+    try
+    {
+      await _AuthorService.DeleteAuthor(id);
+      return NoContent();
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
   }
 
 }

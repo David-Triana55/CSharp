@@ -1,7 +1,6 @@
 namespace LibraryAPI.DTOs;
 using System.ComponentModel.DataAnnotations;
 
-
 public class RegisterUserDto
 {
   [Required, EmailAddress]

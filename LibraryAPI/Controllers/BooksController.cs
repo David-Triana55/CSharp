@@ -3,48 +3,90 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace LibraryAPI.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class BooksController : ControllerBase
+public class BooksController(IBookService service) : ControllerBase
 {
-  IBookService _bookService;
-  public BooksController(IBookService service)
-  {
-    _bookService = service;
-  }
+  readonly IBookService _bookService = service;
 
   [HttpGet]
-  [Authorize(Roles = "user")]
-  [Authorize(Roles = "admin")]
-  public IActionResult Get()
+  [Authorize]
+  public async Task<IActionResult> Get()
   {
-    return Ok(_bookService.GetBooks());
+    try
+    {
+      var books = await _bookService.GetBooks();
+      return Ok(books);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
   }
+
+
+  [HttpGet("{id}")]
+  [Authorize]
+  public async Task<IActionResult> GetById(int id)
+  {
+    try
+    {
+      var books = await _bookService.GetBookId(id);
+      return Ok(books);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
+  }
+
 
   [HttpPost]
   [Authorize(Roles = "admin")]
-  public IActionResult Post(CreateBookDto book)
+  public async Task<IActionResult> Post(CreateBookDto book)
   {
-    _bookService.Add(book);
-    return Created();
+    try
+    {
+      ResponseBookDto responseBook = await _bookService.CreateBook(book);
+      return CreatedAtAction(nameof(GetById), new { id = responseBook.Id }, responseBook);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
   }
+
 
   [HttpPut("{id}")]
   [Authorize(Roles = "admin")]
   public async Task<IActionResult> Put(int id, UpdateBookDto book)
   {
-    await _bookService.Edit(id, book);
-    return Ok(new { message = "Book update sucessfully" });
+    try
+    {
+      await _bookService.UpdateBook(id, book);
+      return Ok(new { message = "Book update sucessfully" });
+
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
   }
+
 
   [HttpDelete("{id}")]
   [Authorize(Roles = "admin")]
-
   public async Task<IActionResult> Delete(int id)
   {
-    await _bookService.Remove(id);
-    return NoContent();
+    try
+    {
+      await _bookService.DeleteBook(id);
+      return NoContent();
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new { message = ex.Message });
+    }
   }
 
 }
