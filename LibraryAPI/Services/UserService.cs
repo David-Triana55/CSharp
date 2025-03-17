@@ -7,11 +7,10 @@ using Microsoft.IdentityModel.Tokens;  // define seguridad del token
 using System.Security.Claims;          // definir claims del token
 using System.Text;                     // convertir la clave secreta a bytes
 using BCrypt.Net;                      // cifrar la clave secreta
-
 public class UserService(LibraryContext context) : IUserService
 {
   readonly LibraryContext _context = context;
-  private readonly string _secretKey = "TuClaveSuperSecretaConAlMenos16Caracteres";
+  private readonly string _secretKey = "y9pmfobF1gIzjJyGDecxBLC8lh2estASerN8vlqGVNzyNP2Rz8eo2T+ktDa/RV3S";
 
   public bool UserExist(string email)
   {

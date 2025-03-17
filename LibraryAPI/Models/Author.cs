@@ -9,5 +9,5 @@ public class Author
 
   public DateOnly Birthdate { get; set; }
 
-  public virtual ICollection<Book> Books { get; set; } = [];
+  public virtual ICollection<Book> Books { get; set; } // navigation property
 }

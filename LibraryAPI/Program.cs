@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,        // Para quien esta destinado el token
             ValidateLifetime = true,         // Verifica expiración
             ValidateIssuerSigningKey = true, // Verifica firma
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TuClaveSuperSecretaConAlMenos16Caracteres"))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"]))
         };
     });
 
