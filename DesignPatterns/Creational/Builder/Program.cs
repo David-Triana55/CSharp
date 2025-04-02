@@ -34,6 +34,7 @@ try
       .Build();
 
 
+
   List<Computer> computers = new List<Computer> { computer, computer1 };
   foreach (var c in computers)
   {
@@ -50,8 +51,6 @@ try
     Console.WriteLine($"Power Supply: {c.PowerSupply}");
     Console.WriteLine();
   }
-
-
 }
 catch (ArgumentException ex)
 {

@@ -6,10 +6,10 @@ public class PagoTarjeta : IPago
   private string numeroTarjeta;
   private string cvv;
 
-  public PagoTarjeta(string numero, string cvv)
+  public PagoTarjeta(string numero, string clave)
   {
-    this.numeroTarjeta = numero;
-    this.cvv = cvv;
+    numeroTarjeta = numero;
+    cvv = clave;
   }
 
   public void ProcesarPago(decimal monto)

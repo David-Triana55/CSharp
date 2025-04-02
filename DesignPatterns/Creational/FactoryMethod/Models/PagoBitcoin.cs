@@ -7,7 +7,7 @@ public class PagoBitcoin : IPago
 
   public PagoBitcoin(string wallet)
   {
-    this.direccionWallet = wallet;
+    direccionWallet = wallet;
   }
 
   public void ProcesarPago(decimal monto)
