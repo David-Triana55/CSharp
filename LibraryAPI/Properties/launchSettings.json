@@ -8,6 +8,7 @@
       "applicationUrl": "http://localhost:5152",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "SECRET_KEY": "y9pmfobF1gIzjJyGDecxBLC8lh2estASerN8vlqGVNzyNP2Rz8eo2T+ktDa/RV3S"
       }
     },
     "https": {
@@ -16,7 +17,8 @@
       "launchBrowser": false,
       "applicationUrl": "https://localhost:7009;http://localhost:5152",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SECRET_KEY": "y9pmfobF1gIzjJyGDecxBLC8lh2estASerN8vlqGVNzyNP2Rz8eo2T+ktDa/RV3S"
       }
     }
   }
